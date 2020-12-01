@@ -1,0 +1,12 @@
+.barColor {
+    background-color:#75E6DA;
+}
+
+.linkText {
+    color: black;
+}
+
+.linkText:hover {
+    color: black;
+    font-weight: bold;
+}

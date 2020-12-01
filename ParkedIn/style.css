@@ -1,0 +1,117 @@
+body {
+    margin: 0%;
+    padding: 0%;
+    position: relative;
+    min-height: 100vh;
+}
+
+@font-face {
+    font-family: counterFont;
+    src: url(/Resources/Fonts/digital-7.ttf);
+  }
+
+#map {
+    height: 70vh;
+    width: 100%;
+    background-color: grey;
+    border-radius: 10px;
+}
+
+#parkingInfo {
+    height: 200px;
+    width: 100%;
+    /* background-color: lightblue; */
+}
+
+.topMargin {
+    margin-top: 18px;
+}
+
+ul.lotHours {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 20px;
+}
+
+li {
+    font-size: 15px;
+}
+
+.counter {
+    width: 100%;
+    height: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    border: solid black 1px;
+    background-color: rgb(24, 24, 24);
+    border-radius: 15px;
+
+    text-align: center;
+    font-family: counterFont;
+    font-size: 26px;
+    line-height: 1.1;
+    color: greenyellow;
+}
+
+.card {
+    border-radius: 15px;
+}
+
+.card-header {
+    padding: 0px;
+    margin: 0px;
+}
+
+.buttonName {
+    margin-bottom: 0;
+    font-size: 1em;
+}
+
+.buttonCounter {
+    font-size: 2em;
+    line-height: 0.8;
+}
+
+.parkingIcons {
+    display: inline;
+    margin-left: 7.76px;
+    margin-right: 7.76px;
+    width: 30px;
+    height: 30px;
+}
+
+.directionsButton {
+    margin-top: 5px;
+}
+
+.parkingIconsAndInfo {
+    margin-top: 25px;
+}
+
+.address {
+    display: inline;
+    float: right;
+    color: rgb(99, 95, 95);
+    font-size: 15px;
+}
+
+.appName {
+    display: inline;
+    font-size: 20px;
+    text-align: left;
+    color: white;
+}
+
+.parkingImage {
+    width: 100%;
+    height: auto;
+    opacity: 0.5;
+}
+
+.myFooter {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 3.5rem; 
+}
