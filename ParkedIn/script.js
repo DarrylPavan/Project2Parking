@@ -36,11 +36,11 @@ function initMap() {
         icon: customMarker,
     });
 
-    const buttonLakeLoiseParking = document.querySelector("#headingOne")
+    const buttonLakeLouiseParking = document.querySelector("#headingOne")
     const buttonMoraineLakeParking = document.querySelector("#headingTwo")
     const buttonOverflowParking = document.querySelector("#headingThree")
     
-    buttonLakeLoiseParking.addEventListener("click", function() {
+    buttonLakeLouiseParking.addEventListener("click", function() {
         map.panTo(lakeLouiseParkingCoordinates);
         map.setZoom(16);
     })
@@ -62,7 +62,10 @@ const availableParkingNumbers = []
 const namesParkingLots = document.getElementsByClassName("buttonName");
 const lotHours = document.getElementsByClassName("lotHours");
 const parkingIconsAndInfo = document.getElementsByClassName("parkingIconsAndInfo");
-
+const directionsButton = document.getElementsByClassName("directionsButton");
+const address = document.getElementsByTagName("address");
+const featureIcons = ["rv.svg", "bicycle.svg", "chargingStation.svg", "accessible.svg"];
+const featureIconsDisplayed = [];
 //methods
 
 /**
@@ -83,36 +86,38 @@ function pageLoad() {
  * 3 - Overflow 
  */
 function retrieveParkingLots() {
-    fetch ('/parkinglots')
+    fetch ('http://localhost:8082/parkinglots')
     .then(response => response.json()) //converts response json file to an object
     .then(lots => {
         parkingLots = lots;
     })
-    .then(parkingLots => updateStallsAvailable());
+    .then(parkingLots => updateParkingContent());
 }
 
 function retrieveParkingLotsCouch() {
-    fetch ('/parkinglotscouch')
+    fetch ('http://localhost:8082/parkinglotscouch')
     .then(response => response.json()) //converts response json file to an object
     .then(lots => {
         parkingLots = lots;
     })
-    .then(() => updateStallsAvailable());
+    .then(() => updateParkingContent());
 }
 
 
 /**
  * goes through the array of parking lots and updates stalls available
  */
-function updateStallsAvailable() { //TODO rename to represent update of parking lots
+function updateParkingContent() { //TODO rename to represent update of parking lots
     for (let i = 0; i < parkingLots.length; i++) {
         namesParkingLots[i].innerHTML = parkingLots[i].name;  
         
-        parkingIconsAndInfo[i].innerHTML = `<b>Parking Features:<b> <br> 
-        <img class="parkingIcons" src="Resources/Icons/car.svg">
+        parkingIconsAndInfo[i].innerHTML = `<b>Parking Features:<b> <br>
         <img class="parkingIcons" src="Resources/Icons/rv.svg"> 
         <img class="parkingIcons" src="Resources/Icons/accessible.svg">
         `
+        console.log(getFeatureIcons(parkingLots[i]));
+
+        address[i].innerHTML = parkingLots[i].address;
         lotHours[i].innerHTML = `<b>Lot Hours:</b> 
         <li>Monday: ${parkingLots[i].hours.monday}</li>
         <li>Tuesday: ${parkingLots[i].hours.tuesday}</li>
@@ -126,7 +131,6 @@ function updateStallsAvailable() { //TODO rename to represent update of parking 
         parkingWarning(availableLots[i])
     };
 }
-
 
 /**
  * calculates stalls available for each obj
@@ -144,7 +148,7 @@ function calculateStallsAvailable (obj) {
 /**
  * sets intervals for stallsAvailable updates
  */
-const setIntervalUpdateStallsAvailable = setInterval(retrieveParkingLotsCouch, 5000);
+const setIntervalUpdateParkingContent = setInterval(retrieveParkingLotsCouch, 5000);
 /**
  * returns an object of a parkign by id
  * @param {
@@ -154,7 +158,7 @@ const setIntervalUpdateStallsAvailable = setInterval(retrieveParkingLotsCouch, 5
  * } id 
  */
 function retrieveParkingLot(id) {
-    fetch (`/parkingLot?id=${id}`)
+    fetch (`http://localhost:8082/parkingLot?id=${id}`)
     .then(response => response.json()) //converts response json file to an object
     .then(lot => {
         console.log(lot);
@@ -172,4 +176,18 @@ function parkingWarning (availableLots) {
     } else if (parseInt(availableLots.innerHTML) > 10) {
         availableLots.style.color = "#ADFF2F";
     }
+}
+
+function getFeatureIcons(parkingLot) {
+    let features = parkingLot.parkingFeatures;
+    let iconsDisplayed = [];
+    for (let i = 0; i < Object.keys(features).length; i++) {
+        // if (features[Object.keys(features)[i]] === true) {
+        //     iconsDisplayed.push(featureIcons[i]); 
+        // }
+        if (Object.values(features)[i] === true) {
+            iconsDisplayed.push(featureIcons[i]); 
+        }
+    }
+    return iconsDisplayed;
 }
