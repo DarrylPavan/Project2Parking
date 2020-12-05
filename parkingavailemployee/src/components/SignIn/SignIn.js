@@ -117,7 +117,7 @@ class SignIn extends React.Component {
                         <Col className= "mt-2" lg={12}>
                             <div className = "signInMessage">{this.state.signInMessage}</div>
                         </Col>
-                    </Row>
+                    </Row>                    
                     <Row>
                     <Col xs ={7} md={4} lg={4} className = "mt-2 mb-3">                  
                         <Formik

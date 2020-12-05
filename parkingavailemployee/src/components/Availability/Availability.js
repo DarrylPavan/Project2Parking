@@ -4,6 +4,9 @@ import Container from "react-bootstrap/Container";
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Override from '../Override/Override';
+import { Formik } from 'formik'; 
+import * as yup from 'yup';
+import Form from 'react-bootstrap/Form';
 
 class Availability extends React.Component {
 
@@ -16,7 +19,8 @@ class Availability extends React.Component {
             capacity: 0,
             numOccupiedSpots: 0,
             numAvailableSpots: 0,
-
+            validationMessage: '',
+            confirmationButtonPressed: '',
             currentParkingLot: {
                 _id: '',
                 name: '',
@@ -167,6 +171,8 @@ class Availability extends React.Component {
       
     }
 
+    
+
     incrementNumAvailableSpots = () => {
         //Call /decrementstallsoccupied passing id in query string, PATCH, returns an updated parking lot object
         const patchOptions = {
@@ -207,14 +213,84 @@ class Availability extends React.Component {
 
     }
 
+    setStateValueForOverrideFieldFromValues = (values) => {
+       
+        if (this.state.activeOverrideField === 'capacity')
+        {
+            this.setState({capacity: values.capacity});
+        }
+        else if (this.state.activeOverrideField === 'numOccupiedSpots') {
+            this.setState({numOccupiedSpots: values.numOccupiedSpots});
+        }
+        else if (this.state.activeOverrideField === 'numAvailableSpots') {
+            this.setState({numAvailableSpots: values.numAvailableSpots});
+        }
+    }
+
+    setConfirmationButtonPressed = (confirmationButtonPressed) => {
+        this.setState({confirmationButtonPressed: confirmationButtonPressed});
+    }
+
     render() {
+
+        const schema = yup.object({
+            capacity: yup.number('Must enter only numbers')
+            .typeError('Must be a number not letters')                     
+            .integer('Must enter a whole number')
+            .moreThan(-1,'Must enter whole numbers greater than zero')
+            .required('Must enter a whole number'),
+            
+            numAvailableSpots: yup.number('Must enter only numbers')
+            .typeError('Must be a number not letters')
+            .integer('Must enter a whole number')
+            .moreThan(-1,'Must enter whole numbers greater than zero')
+            .max(yup.ref('capacity'),'Must be equal to capacity or less')
+            .required('Must enter a whole number'),  
+            
+            numOccupiedSpots: yup.number('Must enter only numbers')
+            .typeError('Must be a number not letters')
+            .integer('Must enter a whole number')
+            .moreThan(-1,'Must enter whole numbers greater than zero')
+            .max(yup.ref('capacity'),'Must be equal to capacity or less')
+            .required('Must enter a whole number'),     
+            });
+
         return (
+        <Formik             enableReinitialize
+                            validationSchema={schema}
+                            onSubmit={values =>
+                                {
+                                        console.log(values);
+                                        if (this.state.confirmationButtonPressed === 'save') {
+                                            this.setStateValueForOverrideFieldFromValues (values);
+                                            this.saveParkingLotChanges();
+                                        } else {
+                                            this.resetParkingLot();                                           
+                                        }
+                                }} 
+                            initialValues={{
+                            capacity: this.state.capacity,
+                            numAvailableSpots: this.state.numAvailableSpots,
+                            numOccupiedSpots: this.state.numOccupiedSpots
+                            }}
+                        >
+                            {({
+                                handleSubmit,
+                                submitForm,
+                                handleChange,
+                                handleBlur,
+                                values,
+                                touched,
+                                isValid,
+                                errors,
+                            }) => (       
+
+            <Form noValidate onSubmit = {handleSubmit}> 
             <Container fluid style={{backgroundColor: '#D4F1F4'}}>
                 <Row>                  
                     <Col xs ={12} md={12} lg={12} className = "mt-4">
                         <h2 className="mb-3">{this.state.currentParkingLot.name} Parking Lot</h2>
-                
-                    
+                                          
                         { 
                             this.state.currentParkingLot._id &&  
                             
@@ -230,7 +306,18 @@ class Availability extends React.Component {
                                 getStateNumOccupiedSpots = { this.getStateNumOccupiedSpots }  */
                                 capacity = { this.state.capacity } 
                                 numAvailableSpots = { this.state.numAvailableSpots} 
-                                numOccupiedSpots = { this.state.numOccupiedSpots } /> 
+                                numOccupiedSpots = { this.state.numOccupiedSpots } 
+                                handleSubmit = {handleSubmit}
+                                submitForm = {submitForm}
+                                handleChange = {handleChange}
+                                handleBlur = {handleBlur}
+                                values = {values}
+                                touched = {touched}
+                                isValid = {isValid}
+                                errors = {errors} 
+                                setConfirmationButtonPressed = {this.setConfirmationButtonPressed}
+                                                           
+                            /> 
                         }
 
                         {/* Custom Button CSS  */}
@@ -266,7 +353,9 @@ class Availability extends React.Component {
                     </Col>
                 </Row>
             </Container>
-        
+            </Form>
+        )}
+        </Formik>
         );
     }
 }
