@@ -1,5 +1,8 @@
 const pouch = require('pouchdb')
-const parkingDb = pouch('http://admin:admin@127.0.0.1:5984/parking')
+// const parkingDb = pouch('http://admin:admin@127.0.0.1:5984/parking')
+
+const parkingDb = pouch('http://admin:9WDocaHWVS4U@52.183.116.191:5984/parking')
+
 const find = require('pouchdb-find')
 pouch.plugin(find);
 
