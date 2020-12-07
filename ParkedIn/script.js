@@ -16,7 +16,7 @@ function initMap() {
     //Markers
 
     const customMarker = {
-        url: "/Resources/Icons/customMarker.svg",
+        url: "Resources/Icons/customMarker.svg",
         scaledSize: new google.maps.Size(50, 50),
     }
     
@@ -64,7 +64,7 @@ const lotHours = document.getElementsByClassName("lotHours");
 const parkingIconsAndInfo = document.getElementsByClassName("parkingIconsAndInfo");
 const directionsButton = document.getElementsByClassName("directionsButton");
 const address = document.getElementsByTagName("address");
-const featureIcons = ["rv.svg", "bicycle.svg", "chargingStation.svg", "accessible.svg"];
+const featureIcons = ["accessible.svg", "bicycle.svg", "motorbike.svg", "chargingStation.svg", "rv.svg"];
 const featureIconsDisplayed = [];
 //methods
 
@@ -112,10 +112,9 @@ function updateParkingContent() { //TODO rename to represent update of parking l
         namesParkingLots[i].innerHTML = parkingLots[i].name;  
         
         parkingIconsAndInfo[i].innerHTML = `<b>Parking Features:<b> <br>
-        <img class="parkingIcons" src="Resources/Icons/rv.svg"> 
-        <img class="parkingIcons" src="Resources/Icons/accessible.svg">
+        ${putFeatureIcons(getFeatureIcons(parkingLots[i]))}
         `
-        console.log(getFeatureIcons(parkingLots[i]));
+        // console.log(getFeatureIcons(parkingLots[i]));
 
         address[i].innerHTML = parkingLots[i].address;
         lotHours[i].innerHTML = `<b>Lot Hours:</b> 
@@ -180,14 +179,22 @@ function parkingWarning (availableLots) {
 
 function getFeatureIcons(parkingLot) {
     let features = parkingLot.parkingFeatures;
-    let iconsDisplayed = [];
+    let iconsToDisplay = [];
     for (let i = 0; i < Object.keys(features).length; i++) {
         // if (features[Object.keys(features)[i]] === true) {
         //     iconsDisplayed.push(featureIcons[i]); 
         // }
         if (Object.values(features)[i] === true) {
-            iconsDisplayed.push(featureIcons[i]); 
+            iconsToDisplay.push(featureIcons[i]); 
         }
     }
-    return iconsDisplayed;
+    return iconsToDisplay;
+}
+
+function putFeatureIcons(iconsToDisplay){
+    iconsToDisplayHTML = ""
+    for (let i = 0; i < iconsToDisplay.length; i++) {
+        iconsToDisplayHTML += `<img class="parkingIcons" src="Resources/Icons/${iconsToDisplay[i]}" alt="${iconsToDisplay[i]}"></img>`
+    }
+    return iconsToDisplayHTML
 }
