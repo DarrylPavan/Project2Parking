@@ -41,12 +41,20 @@ class Navigation extends React.Component {
                             <img src= {logo} width="30" height="30" className="d-inline-block align-top" alt="React Bootstrap logo"
                             />
                             </Navbar.Brand>
+                            {!this.props.isSignedIn &&  
+                        // <LinkContainer to='/parkingavailemployee/parkinglots'>
+                            <Nav.Link className='legalTitle py-0' ><span className='legalTitle'>R M Parking<span className ='employeeSign'>Employee</span> </span></Nav.Link>
+                        // </LinkContainer>
+                    }
                             {this.props.isSignedIn &&  
                         <LinkContainer to='/parkingavailemployee/parkinglots'>
                             <Nav.Link className='linkText' ><span className='linkText'>Parking Lots</span></Nav.Link>
                         </LinkContainer>
                     }
-                    </Nav>                
+                    </Nav> 
+                    {/* <Nav > */}
+                        
+                    {/* </Nav>                */}
                 {this.props.isSignedIn && 
                     <Nav className='ml-auto'>
                         <Nav.Link onClick = {this.redirectToSignIn}><span className='linkText'>Signout</span></Nav.Link>

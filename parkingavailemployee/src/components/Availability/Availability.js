@@ -266,15 +266,25 @@ class Availability extends React.Component {
 
 
             numAvailableSpots: yup.number('Must enter only numbers')
-            .typeError('Must be a number not letters')
+            /* .typeError('Must be a number not letters')
             .integer('Must enter a whole number')
-            .moreThan(-1,'Must enter whole numbers greater than zero')
+            .moreThan(-1,'Must enter whole numbers greater than zero') */
             // .max(yup.ref('capacity'),'Must be equal to capacity or less')
             .when('isNumAvailableSpotsOverrideActive', {
                 is: true,
-                then:  yup.number('Must enter only numbers').max(yup.ref('capacity'),'Must be equal to capacity or less') 
-              })
-            .required('Must enter a whole number'),  
+                then:  yup.number('Must enter only numbers')
+                .typeError('Must be a number not letters')
+                .integer('Must enter a whole number')
+                .moreThan(-1,'Must enter whole numbers greater than zero')
+                .max(yup.ref('capacity'),'Must be equal to capacity or less') 
+                .required('Must enter a whole number'), 
+                otherwise: yup.number('Must enter only numbers')
+                .typeError('Must be a number not letters')
+                .integer('Must enter a whole number')
+                .moreThan(-1,'Must enter whole numbers greater than zero')
+                .required('Must enter a whole number'), 
+              }),
+            
             
             numOccupiedSpots: yup.number('Must enter only numbers')
             .typeError('Must be a number not letters')

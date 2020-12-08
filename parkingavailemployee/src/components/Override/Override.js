@@ -101,7 +101,7 @@ class Override extends React.Component {
 
                 <Row className='mb-2'>
                     <Col xs ={12} md={12} lg={2}><label htmlFor='capacity' className ='ml-2 mt-2'>Capacity:</label></Col>
-                    <Col xs ={7} md={7} lg={5}>
+                    <Col xs ={9} md={7} lg={5}>
                         <div className='d-flex'>
                             {/* <input id='capacity' 
                                 className='' 
@@ -138,7 +138,7 @@ class Override extends React.Component {
                 </Row>
                 <Row className='mb-2'>
                     <Col xs ={12} md={12} lg={2}><label htmlFor='numAvailableSpots'className ='ml-2 mt-2'>Number of Available Spots:</label></Col>
-                    <Col xs ={7} md={7} lg={5}>
+                    <Col xs ={9} md={7} lg={5}>
                         <div className='d-flex'>
                             {/* <input id='numAvailableSpots' 
                                 className='' 
@@ -151,7 +151,7 @@ class Override extends React.Component {
 
                         <Form.Group controlId="formNumAvailSpots">
                             <Form.Control id='numAvailableSpots' 
-                                className='' 
+                                className='md-3' 
                                 type="text" 
                                 name="numAvailableSpots" 
                                 style={{ backgroundColor: this.props.getOverrideTextBoxColor('numAvailableSpots')}} 
@@ -181,7 +181,7 @@ class Override extends React.Component {
 
                 <Row className='mb-2'>
                     <Col xs ={12} md={12} lg={2}><label htmlFor='numOccupiedSpots' className ='ml-2 mt-2'>Number of Occupied Spots:</label></Col>
-                    <Col xs ={7} md={7} lg={5}>
+                    <Col xs ={9} md={7} lg={5}>
                         <div className='d-flex'>
                             {/* <input id='numOccupiedSpots' 
                                 className='' 
