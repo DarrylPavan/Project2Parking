@@ -51,11 +51,9 @@ class App extends Component {
     return (
       <React.Fragment>
          <Router >
-          {
-            this.state.isSignedIn && 
-
-            <Navigation logout={ this.logout }/>
-          }     
+          
+          <Navigation isSignedIn = {this.state.isSignedIn} logout={ this.logout }/>
+               
                    
           <Switch>
 

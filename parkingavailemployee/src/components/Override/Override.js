@@ -27,7 +27,7 @@ class Override extends React.Component {
     closeSaveConfirmation = () => this.setState({ showSaveConfirmation: false });
     
     onSaveChanges = (values) => {
-        this.props.setStateValueForOverrideField (values);
+        this.props.setStateValueForOverrideFieldFromValues (values);
         this.props.saveParkingLotChanges();
         this.closeSaveConfirmation();
     }
@@ -38,8 +38,8 @@ class Override extends React.Component {
 
     closeResetConfirmation = () => this.setState({ showResetConfirmation: false });
 
-    resetToDefault = () => {
-        this.props.resetParkingLot();
+    resetToDefault = (values, errors, isValid) => {
+        this.props.resetParkingLot(values, errors, isValid);
         this.closeResetConfirmation();       
     }
 
@@ -57,7 +57,7 @@ class Override extends React.Component {
     }
       
     render() {
-
+               
         const {
                 handleSubmit,
                 submitForm,
@@ -69,6 +69,7 @@ class Override extends React.Component {
                 errors,
             } = this.props;    
 
+            console.log('overRideRender',values,this.props );
        return(
 
                         
@@ -94,7 +95,7 @@ class Override extends React.Component {
 
                 <Row>
                     <Col className= "mt-2" lg={12}>
-                        <div className = "validationMessage">{this.state.validationMessage}</div>
+                        <div className = "validationMessage">{errors.capacity || errors.numAvailableSpots || errors.numOccupiedSpots? this.state.validationMessage : ''}</div>
                     </Col>
                 </Row>  
 
@@ -118,7 +119,8 @@ class Override extends React.Component {
                                 style={{ backgroundColor: this.props.getOverrideTextBoxColor('capacity')}} 
                                 readOnly={ this.props.getOverrideTextBoxReadOnly('capacity')}
                                 value = {values.capacity}
-                                onChange={(event) => {this.props.setStateValueForOverrideField(event);
+                                onChange={(event) => {
+                                // this.props.setStateValueForOverrideField(event);
                                 handleChange(event)}}
                                 isInvalid={!!errors.capacity}/>                   
                             <Form.Control.Feedback type="invalid">
@@ -129,7 +131,7 @@ class Override extends React.Component {
                             <Button variant="flat" 
                                 size="lg" 
                                 className ='ml-2' 
-                                onClick={ () => this.props.engageOverride('capacity')} 
+                                onClick={ () => this.props.engageOverride('capacity', values, errors, isValid)} 
                                 style= {{backgroundColor: this.props.getOverrideButtonColor('capacity')}}>Override</Button>
                         </div>
                     </Col>
@@ -155,8 +157,10 @@ class Override extends React.Component {
                                 style={{ backgroundColor: this.props.getOverrideTextBoxColor('numAvailableSpots')}} 
                                 readOnly={ this.props.getOverrideTextBoxReadOnly('numAvailableSpots')} 
                                 value = {values.numAvailableSpots}
-                                onChange={(event) => {this.props.setStateValueForOverrideField(event);
-                                handleChange(event)}}
+                                onChange={(event) => {handleChange(event);
+                                /* this.props.setStateValueForOverrideField(event);
+                                handleChange(event) */
+                                }}
                                 isInvalid={!!errors.numAvailableSpots}/>
                             <Form.Control.Feedback type="invalid">
                                 {errors.numAvailableSpots}
@@ -166,7 +170,10 @@ class Override extends React.Component {
                             <Button variant="flat" 
                                 size="lg" 
                                 className ='ml-2' 
-                                onClick={ () => this.props.engageOverride('numAvailableSpots')} 
+                                onClick={ (event) => {
+                                    this.props.engageOverride('numAvailableSpots', values, errors, isValid);
+                                    // handleBlur(event);
+                                }} 
                                 style= {{backgroundColor: this.props.getOverrideButtonColor('numAvailableSpots')}}>Override</Button>
                         </div>
                     </Col>
@@ -193,7 +200,8 @@ class Override extends React.Component {
                                 style={{ backgroundColor: this.props.getOverrideTextBoxColor('numOccupiedSpots')}} 
                                 readOnly={ this.props.getOverrideTextBoxReadOnly('numOccupiedSpots')} 
                                 value = {values.numOccupiedSpots}
-                                onChange={(event) => {this.props.setStateValueForOverrideField(event);
+                                onChange={(event) => {
+                                // this.props.setStateValueForOverrideField(event);
                                 handleChange(event)}}
                                 isInvalid={!!errors.numOccupiedSpots}/> 
                             <Form.Control.Feedback type="invalid">
@@ -204,7 +212,7 @@ class Override extends React.Component {
                             <Button variant="flat" 
                                 size="lg" 
                                 className ='ml-2' 
-                                onClick={ () => this.props.engageOverride('numOccupiedSpots')} 
+                                onClick={ () => this.props.engageOverride('numOccupiedSpots', values, errors, isValid)} 
                                 style= {{backgroundColor: this.props.getOverrideButtonColor('numOccupiedSpots')}}>Override</Button>
                         </div>
                     </Col>
@@ -217,7 +225,10 @@ class Override extends React.Component {
 
                             <Button id = 'saveButton' variant="flat" size="lg" onClick={(event)=> this.validateFields(event, errors)} >Save</Button>
 
-                            <Button id = 'resetButton'variant="flat" size="lg" className ='ml-5' onClick={(event)=> this.validateFields(event, errors)} >Reset</Button>                 
+                            <Button id = 'resetButton'variant="flat" size="lg" className ='ml-5' 
+                            /* onClick={(event)=> this.validateFields(event, errors)} */ 
+                            onClick={this.openResetConfirmation }
+                            >Reset</Button>                 
                         </div>
                     </Col>
                 </Row>
@@ -229,9 +240,16 @@ class Override extends React.Component {
                 <Modal.Body>Do you wish to keep these changes?</Modal.Body>
                 <Modal.Footer>
                     {/* <Button variant="secondary" onClick={this.onSaveChanges}> */}
-                    <Button id = 'saveYesButton' variant="secondary" onClick={(e)=> {this.props.setConfirmationButtonPressed ('save');
+                    <Button id = 'saveYesButton' variant="secondary" onClick={(e)=> {
+                        this.props.setConfirmationButtonPressed ('save');
                     this.closeSaveConfirmation();
-                    handleSubmit(e)}}>   
+                    console.log('Save yes button',values, errors);
+                    handleSubmit(e);
+                    /* if (!errors.capacity && !errors.numAvailableSpots && !errors.numOccupiedSpots)  {
+                        this.onSaveChanges(values);
+                    }  */
+                    
+                    }}>   
                     Yes 
                     </Button>
                     <Button variant="secondary" onClick={this.closeSaveConfirmation}>
@@ -247,9 +265,13 @@ class Override extends React.Component {
                 <Modal.Body>Do you wish to reset the values to default?</Modal.Body>
                 <Modal.Footer>
                     {/* <Button variant="secondary" onClick={this.resetToDefault}> */}
-                    <Button id = 'resetYesButton' variant="secondary" onClick={(e)=> {this.props.setConfirmationButtonPressed ('reset'); 
+                    <Button id = 'resetYesButton' variant="secondary" onClick={(e)=> 
+                    {
+                    // this.resetToDefault(values, errors, isValid);  
+                    this.props.setConfirmationButtonPressed ('reset'); 
                     this.closeResetConfirmation(); 
-                    handleSubmit(e)}}>   
+                    handleSubmit(e)
+                    }}>   
                     Yes   
                     </Button>
                     <Button variant="secondary" onClick={this.closeResetConfirmation}>

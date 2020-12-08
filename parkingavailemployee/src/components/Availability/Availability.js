@@ -21,6 +21,7 @@ class Availability extends React.Component {
             numAvailableSpots: 0,
             validationMessage: '',
             confirmationButtonPressed: '',
+            formikKey: 0,
             currentParkingLot: {
                 _id: '',
                 name: '',
@@ -44,7 +45,7 @@ class Availability extends React.Component {
     
     }
 
-    engageOverride = (activeOverrideField) =>{
+    engageOverride = (activeOverrideField, values, errors, isValid) =>{
 
         if (this.state.activeOverrideField === '') {
             this.setState({ activeOverrideField: activeOverrideField });
@@ -52,18 +53,30 @@ class Availability extends React.Component {
         } else if (this.state.activeOverrideField === activeOverrideField) {
             if (activeOverrideField === 'capacity')
             {
+                // this.setState({capacity: values.capacity});
                 this.setState({capacity: this.state.currentParkingLot.capacity});
+                /* values.capacity = this.state.currentParkingLot.capacity;
+                errors.capacity = ''; */
             }
             else if (activeOverrideField === 'numOccupiedSpots') {
+                // this.setState({numOccupiedSpots:values.numOccupiedSpots});
                 this.setState({numOccupiedSpots: this.state.currentParkingLot.stallsOccupied });
+               /*  values.numOccupiedSpots = this.state.currentParkingLot.stallsOccupied;
+                errors.numOccupiedSpots = ''; */
             }
             else if (activeOverrideField === 'numAvailableSpots') {
+                // this.setState({numAvailableSpots: values.numAvailableSpots});
                 this.setState({numAvailableSpots: this.state.currentParkingLot.capacity- this.state.currentParkingLot.stallsOccupied});
+               /*  values.numAvailableSpots = this.state.currentParkingLot.capacity- this.state.currentParkingLot.stallsOccupied;
+                errors.numAvailableSpots = ''; */
             }
 
 
-            this.setState({ activeOverrideField: ''});
+            this.setState({activeOverrideField: ''});
+            this.setState({formikKey: this.state.formikKey + 1});
+            // isValid = true;
         }
+            console.log(this.state);
     }
 
     getOverrideButtonColor = (activeOverrideField) => {
@@ -151,7 +164,7 @@ class Availability extends React.Component {
     
     }
 
-    resetParkingLot = () => {
+    resetParkingLot = (values, errors, isValid) => {
       //Call /resetParkingLot, passing in id by query string, PUT, returns updated parking lot object
         const putOptions = {
             method: 'PUT'           
@@ -160,6 +173,14 @@ class Availability extends React.Component {
         fetch(`/resetparkinglotcouch?_id=${this.state.parkingLotId}`,putOptions)
             .then(response => response.json())
             .then(currentParkingLot => {
+                
+               /*  values.capacity = currentParkingLot.capacity;
+                values.numAvailableSpots = currentParkingLot.capacity-currentParkingLot.stallsOccupied;
+                values.numOccupiedSpots = currentParkingLot.stallsOccupied;
+                errors.capacity = '';
+                errors.numAvailableSpots = '';
+                errors.numOccupiedSpots = '';
+                isValid = true; */
                 this.setState({currentParkingLot: currentParkingLot,
                     capacity: currentParkingLot.capacity, 
                     numOccupiedSpots: currentParkingLot.stallsOccupied, 
@@ -217,13 +238,13 @@ class Availability extends React.Component {
        
         if (this.state.activeOverrideField === 'capacity')
         {
-            this.setState({capacity: values.capacity});
+            this.setState({capacity: parseInt(values.capacity,10)});
         }
         else if (this.state.activeOverrideField === 'numOccupiedSpots') {
-            this.setState({numOccupiedSpots: values.numOccupiedSpots});
+            this.setState({numOccupiedSpots: parseInt(values.numOccupiedSpots,10)});
         }
         else if (this.state.activeOverrideField === 'numAvailableSpots') {
-            this.setState({numAvailableSpots: values.numAvailableSpots});
+            this.setState({numAvailableSpots: parseInt(values.numAvailableSpots,10)});
         }
     }
 
@@ -232,19 +253,27 @@ class Availability extends React.Component {
     }
 
     render() {
-
+        console.log('overAvailRender',this.state );
         const schema = yup.object({
             capacity: yup.number('Must enter only numbers')
             .typeError('Must be a number not letters')                     
             .integer('Must enter a whole number')
             .moreThan(-1,'Must enter whole numbers greater than zero')
+            .min(yup.ref('numOccupiedSpots'),'Must be equal to spots occupied or greater')
             .required('Must enter a whole number'),
             
+            isNumAvailableSpotsOverrideActive: yup.boolean(),
+
+
             numAvailableSpots: yup.number('Must enter only numbers')
             .typeError('Must be a number not letters')
             .integer('Must enter a whole number')
             .moreThan(-1,'Must enter whole numbers greater than zero')
-            .max(yup.ref('capacity'),'Must be equal to capacity or less')
+            // .max(yup.ref('capacity'),'Must be equal to capacity or less')
+            .when('isNumAvailableSpotsOverrideActive', {
+                is: true,
+                then:  yup.number('Must enter only numbers').max(yup.ref('capacity'),'Must be equal to capacity or less') 
+              })
             .required('Must enter a whole number'),  
             
             numOccupiedSpots: yup.number('Must enter only numbers')
@@ -256,7 +285,9 @@ class Availability extends React.Component {
             });
 
         return (
-        <Formik             enableReinitialize
+        <Formik             
+                            key = {this.state.formikKey}
+                            enableReinitialize = {true}
                             validationSchema={schema}
                             onSubmit={values =>
                                 {
@@ -270,6 +301,7 @@ class Availability extends React.Component {
                                 }} 
                             initialValues={{
                             capacity: this.state.capacity,
+                            isNumAvailableSpotsOverrideActive: this.state.activeOverrideField === 'numAvailableSpots',
                             numAvailableSpots: this.state.numAvailableSpots,
                             numOccupiedSpots: this.state.numOccupiedSpots
                             }}
@@ -298,7 +330,7 @@ class Availability extends React.Component {
                                 getOverrideButtonColor = { this.getOverrideButtonColor } 
                                 getOverrideTextBoxColor = { this.getOverrideTextBoxColor } 
                                 getOverrideTextBoxReadOnly = { this.getOverrideTextBoxReadOnly} 
-                                setStateValueForOverrideField = { this.setStateValueForOverrideField } 
+                                setStateValueForOverrideFieldFromValues = { this.setStateValueForOverrideFieldFromValues } 
                                 saveParkingLotChanges = { this.saveParkingLotChanges } 
                                 resetParkingLot = { this.resetParkingLot } 
                                 /* getStateCapacity = { this.getStateCapacity } 
