@@ -330,8 +330,8 @@ class Availability extends React.Component {
             <Form noValidate onSubmit = {handleSubmit}> 
             <Container fluid style={{backgroundColor: '#D4F1F4'}}>
                 <Row>                  
-                    <Col xs ={12} md={12} lg={12} className = "mt-4">
-                        <h2 className="mb-3">{this.state.currentParkingLot.name} Parking Lot</h2>
+                    <Col xs ={12} md={12} lg={12} className = "mt-2">
+                        <h2 className="mb-3 mt-2">{this.state.currentParkingLot.name} Parking Lot</h2>
                                           
                         { 
                             this.state.currentParkingLot._id &&  

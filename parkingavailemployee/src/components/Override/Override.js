@@ -94,13 +94,13 @@ class Override extends React.Component {
             <Col>
 
                 <Row>
-                    <Col className= "mt-2" lg={12}>
+                    <Col className= "mt-0" lg={12}>
                         <div className = "validationMessage">{errors.capacity || errors.numAvailableSpots || errors.numOccupiedSpots? this.state.validationMessage : ''}</div>
                     </Col>
                 </Row>  
 
                 <Row className='mb-2'>
-                    <Col xs ={12} md={12} lg={2}><label htmlFor='capacity' className ='ml-2 mt-2'>Capacity:</label></Col>
+                    <Col xs ={12} md={12} lg={2}><Form.Label htmlFor='capacity' className ='ml-2 mt-3'>Capacity:</Form.Label></Col>
                     <Col xs ={9} md={7} lg={5}>
                         <div className='d-flex'>
                             {/* <input id='capacity' 
@@ -113,8 +113,9 @@ class Override extends React.Component {
                                 onChange={ this.props.setStateValueForOverrideField.bind(this)}/> */}
                         <Form.Group controlId="formCapacity">
                             <Form.Control id='capacity' 
-                                className='' 
+                                className='mt-3' 
                                 type="text" 
+                                size="lg" 
                                 name="capacity" 
                                 style={{ backgroundColor: this.props.getOverrideTextBoxColor('capacity')}} 
                                 readOnly={ this.props.getOverrideTextBoxReadOnly('capacity')}
@@ -137,7 +138,7 @@ class Override extends React.Component {
                     </Col>
                 </Row>
                 <Row className='mb-2'>
-                    <Col xs ={12} md={12} lg={2}><label htmlFor='numAvailableSpots'className ='ml-2 mt-2'>Number of Available Spots:</label></Col>
+                    <Col xs ={12} md={12} lg={2}><Form.Label htmlFor='numAvailableSpots'className ='ml-2 mt-3'>Number of Available Spots:</Form.Label></Col>
                     <Col xs ={9} md={7} lg={5}>
                         <div className='d-flex'>
                             {/* <input id='numAvailableSpots' 
@@ -151,8 +152,9 @@ class Override extends React.Component {
 
                         <Form.Group controlId="formNumAvailSpots">
                             <Form.Control id='numAvailableSpots' 
-                                className='md-3' 
-                                type="text" 
+                                className='mt-3' 
+                                type="text"
+                                size="lg" 
                                 name="numAvailableSpots" 
                                 style={{ backgroundColor: this.props.getOverrideTextBoxColor('numAvailableSpots')}} 
                                 readOnly={ this.props.getOverrideTextBoxReadOnly('numAvailableSpots')} 
@@ -180,7 +182,7 @@ class Override extends React.Component {
                 </Row>
 
                 <Row className='mb-2'>
-                    <Col xs ={12} md={12} lg={2}><label htmlFor='numOccupiedSpots' className ='ml-2 mt-2'>Number of Occupied Spots:</label></Col>
+                    <Col xs ={12} md={12} lg={2}><Form.Label htmlFor='numOccupiedSpots' className ='ml-2 mt-3'>Number of Occupied Spots:</Form.Label></Col>
                     <Col xs ={9} md={7} lg={5}>
                         <div className='d-flex'>
                             {/* <input id='numOccupiedSpots' 
@@ -194,8 +196,9 @@ class Override extends React.Component {
 
                         <Form.Group controlId="formNumOccupiedSpots">    
                             <Form.Control id='numOccupiedSpots' 
-                                className='' 
-                                type="text" 
+                                className='mt-3' 
+                                type="text"
+                                size="lg"  
                                 name="numOccupiedSpots" 
                                 style={{ backgroundColor: this.props.getOverrideTextBoxColor('numOccupiedSpots')}} 
                                 readOnly={ this.props.getOverrideTextBoxReadOnly('numOccupiedSpots')} 
